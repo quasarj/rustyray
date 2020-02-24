@@ -8,9 +8,3 @@ edition = "2018"
 
 [dependencies]
 
-[[test]]
-name = "cucumber"
-harness = false # allows cucumber to print output instead of libtest
-
-[dev-dependencies]
-cucumber = { package = "cucumber_rust", version = "^0.6.0" }

@@ -1,27 +1,57 @@
 pub mod tuple;
+pub mod color;
+pub mod util;
+pub mod canvas;
 pub use tuple::{Tuple};
+pub use color::Color;
+pub use canvas::Canvas;
 
+// use std::vec::Vec;
+
+struct Enviornment {
+    gravity: Tuple,
+    wind: Tuple
+}
+
+struct Projectile {
+    position: Tuple,
+    velocity: Tuple
+}
 
 fn main() {
-    let t1 = Tuple::new_zero();
-    let t2 = Tuple::new(0.0, 2.0, 0.0, 0.0);
+    let start = Tuple::new_point(0.0, 1.0, 0.0);
+    let velocity = &Tuple::new_vector(1.0, 1.8, 0.0).normalize() * 11.25;
 
-    let t3 = &t1 + &t2;
-    let t4 = &t1 - &t2;
-    let t5 = -&t2;
+    let mut p = Projectile { position: start, velocity: velocity };
 
-    let t6 = &t2 * 6.0;
+    let gravity = Tuple::new_vector(0.0, -0.1, 0.0);
+    let wind = Tuple::new_vector(-0.01, 0.0, 0.0);
 
+    let e = Enviornment { gravity: gravity, wind: wind };
 
-    println!("{}: {:?}", 1, t1);
-    println!("{}: {:?}", 2, t2);
-    println!("{}: {:?}", 3, t3);
-    println!("{}: {:?}", 4, t4);
-    println!("{}: {:?}", 5, t5);
-    println!("{}: {:?}", 6, t6);
+    // let mut c = Canvas::new(900, 550);
+    let mut c = Canvas::new(550, 900);
 
-    println!("{}", t2.magnitude());
-    println!("{:?}", t2.normalize());
-    println!("{:?}", t2.dot(&t1));
-    println!("{:?}", t2.cross(&t1));
+    while p.position.y > 0.0 {
+        let x = p.position.x as i32;
+        let y = p.position.y as i32;
+
+        // println!("({},{})", x, y);
+
+        // flip y
+        let y_f = c.height - y;
+
+        c.set_pixel(x, y_f, Color::new(1.0, 1.0, 1.0));
+
+        p = tick(&e, &p);
+    }
+
+    c.print_ppm();
+
+}
+
+fn tick(env: &Enviornment, proj: &Projectile) -> Projectile {
+    let position = &proj.position + &proj.velocity;
+    let velocity = &(&proj.velocity + &env.gravity) + &env.wind;
+    Projectile { position: position, velocity: velocity }
 }
