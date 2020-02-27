@@ -2,6 +2,7 @@ pub mod tuple;
 pub mod color;
 pub mod util;
 pub mod canvas;
+pub mod matrix;
 pub use tuple::{Tuple};
 pub use color::Color;
 pub use canvas::Canvas;
